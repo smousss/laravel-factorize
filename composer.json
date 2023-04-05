@@ -1,0 +1,77 @@
+{
+    "name": "smousss/laravel-factorize",
+    "description": "Effortlessly generate Laravel factories for all your models using GPT-4!",
+    "keywords": [
+        "ai",
+        "artificial intelligence",
+        "chatgpt",
+        "database",
+        "factories",
+        "factory",
+        "gpt-3",
+        "gpt-4",
+        "laravel",
+        "openai",
+        "seed",
+        "seeding",
+        "seeds",
+        "smousss factorize",
+        "smousss"
+    ],
+    "homepage": "https://github.com/smousss/laravel-factorize",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Benjamin Crozat",
+            "email": "hello@benjamincrozat.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.1",
+        "spatie/laravel-package-tools": "^1.14.0",
+        "illuminate/contracts": "^9.0|^10.0"
+    },
+    "require-dev": {
+        "laravel/pint": "^1.0",
+        "nunomaduro/collision": "^7.9",
+        "orchestra/testbench": "^8.0",
+        "pestphp/pest": "^2.0",
+        "pestphp/pest-plugin-arch": "^2.0",
+        "pestphp/pest-plugin-laravel": "^2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Smousss\\Laravel\\Factorize\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Smousss\\Laravel\\Factorize\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/pest",
+        "test-coverage": "vendor/bin/pest --coverage",
+        "format": "vendor/bin/pint"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "phpstan/extension-installer": true
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Smousss\\Laravel\\Factorize\\FactorizeServiceProvider"
+            ],
+            "aliases": {
+                "Factorize": "Smousss\\Laravel\\Factorize\\Facades\\Factorize"
+            }
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
