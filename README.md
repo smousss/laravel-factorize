@@ -31,23 +31,7 @@ class ThreadFactory extends Factory
         });
     }
 
-    public function withBestReply(): static
-    {
-        return $this->state(function () {
-            return [
-                'best_reply_id' => Reply::factory(),
-            ];
-        });
-    }
-
-    public function withReplies(int $count = 1): static
-    {
-        return $this->afterCreating(function (Thread $thread) use ($count) {
-            $thread->replies()->saveMany(
-                Reply::factory()->count($count)->create()
-            );
-        });
-    }
+    …
 }
 ```
 
@@ -75,7 +59,7 @@ Then, create a factory for your Post model:
 php artisan smousss:factorize App\\Models\\Post
 ```
 
-Alternatively, create factories for multiple models:
+Create factories for multiple models:
 
 ```php
 php artisan smousss:factorize App\\Models\\Post App\\Models\\Comment
