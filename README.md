@@ -53,7 +53,7 @@ php artisan vendor:publish --tag=factorize-config
 
 1. First, [generate a secret key](https://smousss.com/dashboard) on smousss.com.
 2. Add it to your `SMOUSSS_SECRET_KEY` environment variable.
-3. Then, create a factory for your Post model: `php artisan smousss:factorize App\\Models\\Post`. Or factories for multiple models: `php artisan smousss:factorize App\\Models\\Post App\\Models\\Comment`
+3. Then, create a factory for your Post model: `php artisan smousss:factorize App\\Models\\Post`. Or for multiple models: `php artisan smousss:factorize App\\Models\\Post App\\Models\\Comment`
 
 ## Credit
 
