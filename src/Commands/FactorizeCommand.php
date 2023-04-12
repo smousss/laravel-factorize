@@ -53,6 +53,7 @@ class FactorizeCommand extends Command
         $response = Http::withToken(config('factorize.secret_key'))
             ->timeout(300)
             ->retry(3)
+            ->withHeaders(['Accept' => 'application/json'])
             ->post(config('factorize.debug', false)
                 ? 'https://smousss.test/api/factorize'
                 : 'https://smousss.com/api/factorize', compact('model_code', 'model_schema'))
