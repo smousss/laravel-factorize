@@ -51,7 +51,8 @@ class FactorizeCommand extends Command
         $this->line("GPT-4 is generating tokens for your {$model} factory…");
 
         $response = Http::withToken(config('factorize.secret_key'))
-            ->timeout(600)
+            ->timeout(300)
+            ->retry(3)
             ->post(config('factorize.debug', false)
                 ? 'https://smousss.test/api/factorize'
                 : 'https://smousss.com/api/factorize', compact('model_code', 'model_schema'))
