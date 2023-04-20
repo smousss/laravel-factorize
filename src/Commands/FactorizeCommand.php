@@ -70,10 +70,6 @@ class FactorizeCommand extends Command
         return self::SUCCESS;
     }
 
-    public function generateFactory(string $model)
-    {
-    }
-
     protected function getSourceCodeForModel(Model $model) : string
     {
         $file = (new ReflectionClass($model::class))->getFileName();
