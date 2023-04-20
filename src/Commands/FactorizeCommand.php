@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Client\RequestException;
 
 class FactorizeCommand extends Command
 {
@@ -29,52 +30,58 @@ class FactorizeCommand extends Command
             $model = $this->ask("Name of your model (e.g. App\Models\Post)", 'App\Models\Post');
         }
 
-        foreach (Arr::wrap($model) as $key => $value) {
+        foreach (Arr::wrap($model) as $key => $model) {
             if ($key > 0) {
                 $this->newLine();
             }
 
-            $this->generateFactory($value);
+            $modelInstance = (new $model);
+
+            $model_code = $this->getSourceCodeForModel($modelInstance);
+
+            $model_schema = implode('; ', $this->getSchemaForModel($modelInstance));
+
+            $this->line("GPT-4 is generating tokens for your {$model} factory…");
+
+            try {
+                $response = Http::withToken(config('factorize.secret_key'))
+                    ->timeout(300)
+                    ->retry(3)
+                    ->withHeaders(['Accept' => 'application/json'])
+                    ->post(
+                        config('factorize.debug', false)
+                            ? 'https://smousss.test/api/factorize'
+                            : 'https://smousss.com/api/factorize',
+                        compact('model_code', 'model_schema')
+                    )
+                    ->throw()
+                    ->json();
+
+                $baseModelName = Str::after($model, 'App\\Models\\');
+
+                File::put(base_path($path = "database/factories/{$baseModelName}Factory.php"), trim(trim($response['data'], '`ph')) . PHP_EOL);
+
+                $this->info("Your factory has been created at $path! 🎉 (Tokens: {$response['meta']['consumed_tokens']})");
+            } catch (RequestException $e) {
+                $this->error($e->response->json()['message']);
+            }
         }
 
         return self::SUCCESS;
     }
 
-    public function generateFactory(string $model) : void
+    public function generateFactory(string $model)
     {
-        $modelInstance = (new $model);
-
-        $model_code = $this->getSourceCodeForModel($modelInstance);
-
-        $model_schema = implode('; ', $this->getSchemaForModel($modelInstance));
-
-        $this->line("GPT-4 is generating tokens for your {$model} factory…");
-
-        $response = Http::withToken(config('factorize.secret_key'))
-            ->timeout(300)
-            ->retry(3)
-            ->withHeaders(['Accept' => 'application/json'])
-            ->post(config('factorize.debug', false)
-                ? 'https://smousss.test/api/factorize'
-                : 'https://smousss.com/api/factorize', compact('model_code', 'model_schema'))
-            ->throw()
-            ->json();
-
-        $baseModelName = Str::after($model, 'App\\Models\\');
-
-        File::put(base_path($path = "database/factories/{$baseModelName}Factory.php"), trim(trim($response['data'], '`ph')) . PHP_EOL);
-
-        $this->info("Your factory has been created at $path! 🎉 (Tokens: {$response['meta']['consumed_tokens']})");
     }
 
     protected function getSourceCodeForModel(Model $model) : string
     {
-        $sourceCode = File::get((new ReflectionClass($model::class))->getFileName());
+        $file = (new ReflectionClass($model::class))->getFileName();
 
-        $sourceCode = str_replace("\t", '', $sourceCode);
-        $sourceCode = str_replace("\n", ' ', $sourceCode);
-
-        return preg_replace('/ {2,}/', ' ', $sourceCode);
+        return str(File::get($file))
+            ->replace(["\t", "\n"], [' ', ' '])
+            ->replaceMatches('/ {2,}/', ' ')
+            ->replaceMatches('/\/\*[\s\S]*?\*\/|\/\/.*/', '');
     }
 
     protected function getSchemaForModel(Model $model)
