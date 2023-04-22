@@ -1,10 +1,12 @@
-# Factorize for Laravel
+![Factorize](https://user-images.githubusercontent.com/3613731/233783043-44972aad-e550-495f-8a43-45914cd475be.png)
+
+# Magically add missing Model Factories
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/smousss/laravel-factorize.svg?style=flat-square)](https://packagist.org/packages/smousss/laravel-factorize)
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/smousss/laravel-factorize/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/smousss/laravel-factorize/actions?query=workflow%3Arun-tests+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/smousss/laravel-factorize.svg?style=flat-square)](https://packagist.org/packages/smousss/laravel-factorize)
 
-Smousss can generate Laravel factories for every model in your project. A dream came true for developers inheriting legacy codebases.
+Smousss generates missing Model Factories to help you create fake data seeders and write tests at ease. A dream came true for developers inheriting legacy codebases.
 
 ```php
 namespace Database\Factories;
